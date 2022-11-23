@@ -77,6 +77,14 @@ class CampoTest {
 	}
 	
 	@Test
+	void TesteIsMinadoMinarRetesta() {
+		assertFalse(campo.isMinado());
+		campo.minar();
+		assertTrue(campo.isMinado());
+	}
+	
+	
+	@Test
 	void TesteAlternarMarcacao() {
 		campo.alternarMarcacao();
 		assertTrue(campo.isMarcado());
@@ -105,6 +113,18 @@ class CampoTest {
 		campo.alternarMarcacao();
 		campo.minar();
 		assertFalse(campo.abrir());
+	}
+	
+	@Test
+	void TesteLinhaCorretaAtual() {
+		Campo ctest = new Campo(3,2);
+		assertTrue(ctest.getLinha() == 3);
+	}
+	
+	@Test
+	void TesteColunaCorretaCampo() {
+		Campo ctest = new Campo(3,2);
+		assertTrue(ctest.getColuna()==2);
 	}
 	
 	@Test
@@ -142,5 +162,102 @@ class CampoTest {
 		campo.abrir();
 		
 		assertTrue(campo22.isAberto() && !campo11.isAberto());
+	}
+	
+	@Test
+	void TesteVerificaObjetivoCampoFechado() {
+		
+		Campo campo1 = new Campo(1,1);
+		assertFalse(campo1.objetivoAlcancado());
+	}
+
+	@Test
+	void TesteVerificaObjetivoCampoAbertoNaoMinado() {
+		
+		Campo campo1 = new Campo(1,1);
+		campo1.abrir();
+		assertTrue(campo1.objetivoAlcancado());
+	}
+
+	@Test
+	void TesteVerificaObjetivoCampoMinadoProtegido() {
+		
+		Campo campo1 = new Campo(1,1);
+		campo1.minar();
+		campo1.alternarMarcacao();
+		assertTrue(campo1.objetivoAlcancado());
+	}
+	
+	@Test
+	void TesteVerificaMinasNasVizinhacas() {
+		
+		Campo campo32 = new Campo(3,2);
+		Campo campo44 = new Campo(4,4);
+		Campo campo22 = new Campo(2,2);
+		Campo campo23 = new Campo(2,3);
+		campo44.minar();
+		campo22.minar();
+		
+		campo.adicionarVizinho(campo32);
+		campo.adicionarVizinho(campo44);
+		campo.adicionarVizinho(campo22);
+		
+		assertTrue(campo.minasNaVizinhanca()==2);
+	}
+	
+	@Test
+	void TesteVerificaSetAbertoTrue() {
+		campo.setAberto(true);
+		assertTrue(campo.isAberto());
+	}
+	
+	@Test
+	void TesteVerificaSetAbertoFalse() {
+		assertFalse(campo.isAberto());
+	}
+	
+	@Test
+	void TesteReiniciarCampoMarcado() {
+		campo.alternarMarcacao();
+		campo.reiniciar();
+		assertFalse(campo.isMarcado());
+	}
+	
+	@Test
+	void TesteReiniciarCampoAberto() {
+		campo.abrir();
+		campo.reiniciar();
+		assertFalse(campo.isAberto());
+	}
+
+	@Test
+	void TesteReiniciarCampoMinado() {
+		campo.minar();
+		campo.reiniciar();
+		assertFalse(campo.isMinado());
+	}
+	
+	@Test
+	void TestToStringCampoAbertoSemMinasNaVizinhanca() {
+		campo.abrir();
+		assertTrue(campo.toString()==" ");
+	}
+
+	@Test
+	void TestToStringCampoFechado() {
+		assertTrue(campo.toString()=="?");
+	}
+
+	@Test
+	void TestToStringCampoMarcado() {
+		campo.alternarMarcacao();
+		assertTrue(campo.toString()=="x");
+	}
+	
+	@Test
+	void TestToStringCampoAbertoMinado() {
+		campo.minar();
+		campo.setAberto(true);
+		assertTrue(campo.toString()=="*");
 	}
 }

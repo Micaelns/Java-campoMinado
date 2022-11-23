@@ -27,10 +27,10 @@ public class Tabuleiro {
 	
 	public void abrir(int linha, int coluna) {
 		try {
-		campos.parallelStream()
-			.filter(c -> c.getColuna() == coluna && c.getLinha() == linha)
-			.findFirst()
-			.ifPresent(c -> c.abrir());
+				campos.parallelStream()
+						.filter(c -> c.getColuna() == coluna && c.getLinha() == linha)
+						.findFirst()
+						.ifPresent(c -> c.abrir());
 		} catch(ExplosaoException e){
 			campos.forEach( c ->  c.setAberto(true));
 			throw e;
@@ -64,11 +64,11 @@ public class Tabuleiro {
 		long minasArmadas = 0;
 		Predicate<Campo> minado = c -> c.isMinado();
 		
-		do {
+		 while(minasArmadas < minas){
 			int aleatorio = (int) (Math.random() * campos.size());
 			campos.get(aleatorio).minar();
 			minasArmadas = campos.stream().filter(minado).count();
-		} while(minasArmadas < minas);
+		}
 	}
 	
 	public boolean objetivoAlcancado() {
@@ -84,7 +84,17 @@ public class Tabuleiro {
 		StringBuilder sb = new StringBuilder();
 		
 		int i = 0;
+		sb.append("   ");
+		for (int c = 0; c < colunas; c++) {
+			sb.append(" ");
+			sb.append(c);
+			sb.append(" ");
+		}
+		sb.append("\n");
 		for (int l = 0; l < linhas; l++) {
+			sb.append(" ");
+			sb.append(l);
+			sb.append(" ");
 			for (int c = 0; c < colunas; c++) {
 				sb.append(" ");
 				sb.append(campos.get(i));
