@@ -25,31 +25,6 @@ public class Campo {
 		observadores.add(observador);
 	}
 	
-	private void notificarObservadores(CampoEvento evento) {
-		observadores.stream()
-		    .forEach( o -> o.eventoOcorreu(this,evento));
-	}
-	
-	boolean adicionarVizinho(Campo vizinho) {
-		boolean linhaDiferente = linha != vizinho.linha;
-		boolean colunaDiferente = coluna != vizinho.coluna;
-		boolean diagonal = linhaDiferente && colunaDiferente;
-		
-		int deltaLinha = Math.abs(linha - vizinho.linha);
-		int deltaColuna = Math.abs(coluna - vizinho.coluna);
-		int deltaGeral = deltaColuna + deltaLinha;
-		
-		if(deltaGeral == 1 && !diagonal ) {
-			vizinhos.add(vizinho);
-			return true;
-		} else if(deltaGeral == 2 && diagonal) {
-			vizinhos.add(vizinho);
-			return true;
-		}else {
-			return false;
-		}
-	}
-	
 	public void alternarMarcacao() {
 		if(!aberto) {
 			marcado = !marcado;
@@ -85,10 +60,6 @@ public class Campo {
 		return vizinhos.stream().noneMatch( v-> v.minado);
 	}
 	
-	void minar() {
-		minado=true;
-	}
-	
 	public boolean isMinado() {
 		return minado;
 	}
@@ -108,12 +79,6 @@ public class Campo {
 	public int getColuna() {
 		return coluna;
 	}
-	
-	boolean objetivoAlcancado() {
-		boolean desvendado = !minado && aberto;
-		boolean protegido = minado && marcado;
-		return desvendado || protegido;
-	}
 
 	public int minasNaVizinhanca() {
 		return (int)vizinhos.stream().filter( v -> v.minado).count();
@@ -127,6 +92,10 @@ public class Campo {
 		}
 	}
 
+	void minar() {
+		minado=true;
+	}
+	
 	void reiniciar() {
 		aberto = false;
 		minado = false;
@@ -134,4 +103,34 @@ public class Campo {
 		notificarObservadores(CampoEvento.REINICIAR);
 	}
 
+	boolean objetivoAlcancado() {
+		boolean desvendado = !minado && aberto;
+		boolean protegido = minado && marcado;
+		return desvendado || protegido;
+	}
+
+	boolean adicionarVizinho(Campo vizinho) {
+		boolean linhaDiferente = linha != vizinho.linha;
+		boolean colunaDiferente = coluna != vizinho.coluna;
+		boolean diagonal = linhaDiferente && colunaDiferente;
+		
+		int deltaLinha = Math.abs(linha - vizinho.linha);
+		int deltaColuna = Math.abs(coluna - vizinho.coluna);
+		int deltaGeral = deltaColuna + deltaLinha;
+		
+		if(deltaGeral == 1 && !diagonal ) {
+			vizinhos.add(vizinho);
+			return true;
+		} else if(deltaGeral == 2 && diagonal) {
+			vizinhos.add(vizinho);
+			return true;
+		}else {
+			return false;
+		}
+	}
+	
+	private void notificarObservadores(CampoEvento evento) {
+		observadores.stream()
+		    .forEach( o -> o.eventoOcorreu(this,evento));
+	}
 }

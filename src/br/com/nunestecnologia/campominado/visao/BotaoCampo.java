@@ -47,6 +47,20 @@ public class BotaoCampo extends JButton
 		 }
 	}
 
+	@Override
+	public void mousePressed(MouseEvent e) {
+		if(e.getButton() == 1) {
+			campo.abrir();
+		}else {
+			campo.alternarMarcacao();
+		}
+	}
+
+	public void mouseClicked(MouseEvent e) {}
+	public void mouseReleased(MouseEvent e) {}
+	public void mouseEntered(MouseEvent e) {}
+	public void mouseExited(MouseEvent e) {}
+
 	private void aplicarEstiloPadrao() {
 		setBackground(BG_PADRAO);
 		setBorder(BorderFactory.createBevelBorder(0));
@@ -98,19 +112,4 @@ public class BotaoCampo extends JButton
 		String valor = !campo.vizinhancaSegura()? campo.minasNaVizinhanca()+"":"";
 		setText(valor);
 	}
-
-	@Override
-	public void mousePressed(MouseEvent e) {
-		if(e.getButton() == 1) {
-			campo.abrir();
-		}else {
-			campo.alternarMarcacao();
-		}
-	}
-
-	public void mouseClicked(MouseEvent e) {}
-	public void mouseReleased(MouseEvent e) {}
-	public void mouseEntered(MouseEvent e) {}
-	public void mouseExited(MouseEvent e) {}
-
 }

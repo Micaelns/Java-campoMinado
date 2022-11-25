@@ -32,11 +32,6 @@ public class Tabuleiro implements CampoObservador {
 		observadores.add(observador);
 	}
 	
-	private void notificarObsercadores(boolean resultado) {
-		observadores.stream()
-		 	.forEach( o -> o.accept(new ResultadoEvento(resultado)));
-	}
-	
 	@Override
 	public void eventoOcorreu(Campo c, CampoEvento evento) {
 		if(evento == CampoEvento.EXPLODIR) {
@@ -52,48 +47,12 @@ public class Tabuleiro implements CampoObservador {
 						.findFirst()
 						.ifPresent(c -> c.abrir());
 	}
-	
-	private void mostrarMinas() {
-		campos.stream()
-			.filter( c -> c.isMinado() )
-			.filter( c -> !c.isMarcado() )
-			.forEach( c ->  c.setAberto(true));
-	}
 
 	public void alternarMarcacao(int linha, int coluna) {
 		campos.parallelStream()
 			.filter(c -> c.getColuna() == coluna && c.getLinha() == linha)
 			.findFirst()
 			.ifPresent(c -> c.alternarMarcacao());
-	}
-
-	private void gerarCampos() {
-		for (int l = 0; l < linhas; l++) {
-			for (int c = 0; c < colunas; c++) {
-				Campo campo = new Campo(l,c);
-				campo.registrarObservador(this);
-				campos.add(campo);
-			}
-		}
-	}
-
-	private void associarVizinhos() {
-		for (Campo c1: campos) {
-			for (Campo c2: campos) {
-				c1.adicionarVizinho(c2);
-			}
-		}
-	}
-
-	private void sortearMinas() {
-		long minasArmadas = 0;
-		Predicate<Campo> minado = c -> c.isMinado();
-		
-		 while(minasArmadas < minas){
-			int aleatorio = (int) (Math.random() * campos.size());
-			campos.get(aleatorio).minar();
-			minasArmadas = campos.stream().filter(minado).count();
-		}
 	}
 	
 	public boolean objetivoAlcancado() {
@@ -113,5 +72,44 @@ public class Tabuleiro implements CampoObservador {
 		return colunas;
 	}
 
+	private void notificarObsercadores(boolean resultado) {
+		observadores.stream()
+		 	.forEach( o -> o.accept(new ResultadoEvento(resultado)));
+	}
 
+	private void sortearMinas() {
+		long minasArmadas = 0;
+		Predicate<Campo> minado = c -> c.isMinado();
+		
+		 while(minasArmadas < minas){
+			int aleatorio = (int) (Math.random() * campos.size());
+			campos.get(aleatorio).minar();
+			minasArmadas = campos.stream().filter(minado).count();
+		}
+	}
+	
+	private void associarVizinhos() {
+		for (Campo c1: campos) {
+			for (Campo c2: campos) {
+				c1.adicionarVizinho(c2);
+			}
+		}
+	}
+
+	private void gerarCampos() {
+		for (int l = 0; l < linhas; l++) {
+			for (int c = 0; c < colunas; c++) {
+				Campo campo = new Campo(l,c);
+				campo.registrarObservador(this);
+				campos.add(campo);
+			}
+		}
+	}
+
+	private void mostrarMinas() {
+		campos.stream()
+			.filter( c -> c.isMinado() )
+			.filter( c -> !c.isMarcado() )
+			.forEach( c ->  c.setAberto(true));
+	}
 }
