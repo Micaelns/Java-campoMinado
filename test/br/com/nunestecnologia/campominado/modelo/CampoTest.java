@@ -129,10 +129,16 @@ class CampoTest {
 	
 	@Test
 	void TesteAbrirMinadoNaoMarcado() {
-		campo.minar();
-		assertThrows(ExplosaoException.class,() ->{
-			assertFalse(campo.abrir());
+		
+		campo.registrarObservador( (campo, evento) -> {
+			if(evento == CampoEvento.EXPLODIR) {
+				assertTrue(true);
+			}else {
+				assertFalse(true);
+			}
 		});
+		campo.minar();
+		assertTrue(campo.abrir());
 	}
 	
 	@Test
@@ -201,6 +207,7 @@ class CampoTest {
 		campo.adicionarVizinho(campo32);
 		campo.adicionarVizinho(campo44);
 		campo.adicionarVizinho(campo22);
+		campo.adicionarVizinho(campo23);
 		
 		assertTrue(campo.minasNaVizinhanca()==2);
 	}
@@ -237,27 +244,4 @@ class CampoTest {
 		assertFalse(campo.isMinado());
 	}
 	
-	@Test
-	void TestToStringCampoAbertoSemMinasNaVizinhanca() {
-		campo.abrir();
-		assertTrue(campo.toString()==" ");
-	}
-
-	@Test
-	void TestToStringCampoFechado() {
-		assertTrue(campo.toString()=="?");
-	}
-
-	@Test
-	void TestToStringCampoMarcado() {
-		campo.alternarMarcacao();
-		assertTrue(campo.toString()=="x");
-	}
-	
-	@Test
-	void TestToStringCampoAbertoMinado() {
-		campo.minar();
-		campo.setAberto(true);
-		assertTrue(campo.toString()=="*");
-	}
 }
